@@ -30,29 +30,34 @@ def predict_price(features):
     prediction = model.predict(features)
     return prediction
 
+# Faire en sorte que la marque sélectionnée détermine les modèles disponibles
+brand_models = {}
+for brand in df['marque'].unique():
+    brand_models[brand] = df[df['marque'] == brand]['modele'].unique()
+
 # Créer l'interface utilisateur
 st.title("Estimation du prix d'une voiture")
 
 
 empattement = st.number_input("Empattement")
-longueur_voiture = st.number_input("Longueur de voiture")
-largeur_voiture = st.number_input("Largeur de voiture")
-hauteur_voiture = st.number_input("Hauteur de voiture")
-poids_vehicule = st.number_input("Poids du véhicule")
-nombre_cylindres = st.number_input("Nombre de cylindres")
-taille_moteur = st.number_input("Taille du moteur")
+# longueur_voiture = st.number_input("Longueur de voiture")
+# largeur_voiture = st.number_input("Largeur de voiture")
+# hauteur_voiture = st.number_input("Hauteur de voiture")
+poids_vehicule = st.number_input("Poids du véhicule", min_value=500, max_value=7000, value=1500, step=100)
+nombre_cylindres = st.number_input("Nombre de cylindres", min_value=2, max_value=12, value=4, step=1)
+taille_moteur = st.number_input("Taille du moteur (l/100km)", min_value=1, max_value=12, value=4, step=1)
 taux_alésage = st.number_input("Taux d'alésage")
-course = st.number_input("Course")
-taux_compression = st.number_input("Taux de compression")
+# course = st.number_input("Course")
+# taux_compression = st.number_input("Taux de compression")
 chevaux = st.number_input("Chevaux")
-tour_moteur = st.number_input("Tour du moteur")
+tour_moteur = st.number_input("Tour du moteur", min_value=2000, max_value=10000, value=3500, step=500)
 consommation_ville = st.number_input("Consommation en ville")
 consommation_autoroute = st.number_input("Consommation sur autoroute")
 
 
 # Créer les sélecteurs pour les caractéristiques catégorielles
-marque = st.selectbox("Marque", unique_marques)
-modele = st.selectbox("Modèle", unique_modeles)
+marque = st.selectbox("Marque", list(brand_models.keys()))
+modele = st.selectbox("Modèle", brand_models[marque])
 carburant = st.selectbox("Carburant", unique_carburants)
 turbo = st.selectbox("Turbo", unique_turbos)
 nombre_portes = st.selectbox("Nombre de portes", unique_nombre_portes)
@@ -80,17 +85,14 @@ if predict_button:
         "transmission": [transmission],
         "emplacement_moteur": [emplacement_moteur],
         "empattement": [empattement],
-        "longueur_voiture": [longueur_voiture],
-        "largeur_voiture": [largeur_voiture],
-        "hauteur_voiture": [hauteur_voiture],
         "poids_vehicule": [poids_vehicule],
         "type_moteur": [type_moteur],
         "nombre_cylindres": [nombre_cylindres],
         "taille_moteur": [taille_moteur],
         "systeme_carburant": [systeme_carburant],
         "taux_alésage": [taux_alésage],
-        "course": [course],
-        "taux_compression": [taux_compression],
+        # "course": [course],
+        # "taux_compression": [taux_compression],
         "chevaux": [chevaux],
         "tour_moteur": [tour_moteur],
         "consommation_ville": [consommation_ville],
